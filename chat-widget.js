@@ -7,7 +7,7 @@
     // Load font resource - using Poppins for a fresh look
     const fontElement = document.createElement('link');
     fontElement.rel = 'stylesheet';
-    fontElement.href = 'https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap';
+    fontElement.href = 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap';
     document.head.appendChild(fontElement);
 
     // Apply widget styles with completely different design approach
@@ -30,7 +30,7 @@
             --chat-radius-lg: 20px;
             --chat-radius-full: 9999px;
             --chat-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-family: 'Inter Tight', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         .chat-assist-widget .chat-window {
@@ -981,3 +981,4 @@
         });
     });
 })();
+
