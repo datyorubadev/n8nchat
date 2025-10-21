@@ -1239,4 +1239,3 @@
 
     console.log('Premium Intercom-Style Chat Widget initialized successfully!');
 })();
-[file content end]
