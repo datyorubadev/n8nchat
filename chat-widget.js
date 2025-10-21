@@ -817,13 +817,49 @@
             // Remove typing indicator
             messagesContainer.removeChild(typingIndicator);
             
-            // Display initial bot message with clickable links
+            // Display initial bot message (with multi-image and link support)
             const botMessage = document.createElement('div');
             botMessage.className = 'chat-bubble bot-bubble';
-            const messageText = Array.isArray(userInfoResponseData) ? 
-                userInfoResponseData[0].output : userInfoResponseData.output;
-            botMessage.innerHTML = linkifyText(messageText);
+            
+            const messageText = Array.isArray(userInfoResponseData)
+                ? userInfoResponseData[0].output
+                : userInfoResponseData.output;
+            
+            // Detect all image URLs
+            const imagePattern = /(https?:\/\/[^\s]+\.(?:png|jpg|jpeg|gif|webp))/gi;
+            const images = [...messageText.matchAll(imagePattern)];
+            let processedText = messageText;
+            
+            if (images.length > 0) {
+                // Append all images first
+                images.forEach(match => {
+                    const imageUrl = match[0];
+                    const imageElement = document.createElement('img');
+                    imageElement.src = imageUrl;
+                    imageElement.alt = 'Chat image';
+                    imageElement.style.maxWidth = '100%';
+                    imageElement.style.borderRadius = '12px';
+                    imageElement.style.marginBottom = '8px';
+                    imageElement.loading = 'lazy';
+                    botMessage.appendChild(imageElement);
+            
+                    // Remove image link from text so it doesn't duplicate
+                    processedText = processedText.replace(imageUrl, '').trim();
+                });
+                
+                // Add text below images (with clickable links)
+                if (processedText) {
+                    const textElement = document.createElement('div');
+                    textElement.innerHTML = linkifyText(processedText);
+                    botMessage.appendChild(textElement);
+                }
+            } else {
+                botMessage.innerHTML = linkifyText(messageText);
+            }
+            
             messagesContainer.appendChild(botMessage);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
             
             // Add sample questions if configured
             if (settings.suggestedQuestions && Array.isArray(settings.suggestedQuestions) && settings.suggestedQuestions.length > 0) {
@@ -912,13 +948,49 @@
             // Remove typing indicator
             messagesContainer.removeChild(typingIndicator);
             
-            // Display bot response with clickable links
+            // Display bot response (with multi-image and link support)
             const botMessage = document.createElement('div');
             botMessage.className = 'chat-bubble bot-bubble';
-            const responseText = Array.isArray(responseData) ? responseData[0].output : responseData.output;
-            botMessage.innerHTML = linkifyText(responseText);
+            
+            const responseText = Array.isArray(responseData)
+                ? responseData[0].output
+                : responseData.output;
+            
+            // Detect all image URLs
+            const imagePattern = /(https?:\/\/[^\s]+\.(?:png|jpg|jpeg|gif|webp))/gi;
+            const images = [...responseText.matchAll(imagePattern)];
+            let processedText = responseText;
+            
+            if (images.length > 0) {
+                // Append all images first
+                images.forEach(match => {
+                    const imageUrl = match[0];
+                    const imageElement = document.createElement('img');
+                    imageElement.src = imageUrl;
+                    imageElement.alt = 'Chat image';
+                    imageElement.style.maxWidth = '100%';
+                    imageElement.style.borderRadius = '12px';
+                    imageElement.style.marginBottom = '8px';
+                    imageElement.loading = 'lazy';
+                    botMessage.appendChild(imageElement);
+            
+                    // Remove image link from text so it doesn't duplicate
+                    processedText = processedText.replace(imageUrl, '').trim();
+                });
+            
+                // Add text below images (with clickable links)
+                if (processedText) {
+                    const textElement = document.createElement('div');
+                    textElement.innerHTML = linkifyText(processedText);
+                    botMessage.appendChild(textElement);
+                }
+            } else {
+                botMessage.innerHTML = linkifyText(responseText);
+            }
+            
             messagesContainer.appendChild(botMessage);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
         } catch (error) {
             console.error('Message submission error:', error);
             
@@ -981,4 +1053,5 @@
         });
     });
 })();
+
 
